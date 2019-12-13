@@ -13,6 +13,17 @@ this file and include it in basic-server.js so that it actually works.
 **************************************************************/
 
 var requestHandler = function(request, response) {
+  // Return the correct response for chatterbox
+  if (request.url === '/classes/messages') {
+    console.error('cool');
+    // Retrun parseable stringified JSON
+    let headers = defaultCorsHeaders;
+    headers['Content-Type']= 'application/json'; 
+
+    response.writeHead(200, headers);
+    response.end(JSON.stringify({test:[1,2,4,5]}));
+  }
+
   // Request and Response come from node's http module.
   //
   // They include information about both the incoming request, such as
