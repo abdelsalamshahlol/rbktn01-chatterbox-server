@@ -13,15 +13,44 @@ this file and include it in basic-server.js so that it actually works.
 **************************************************************/
 
 var requestHandler = function(request, response) {
-  // Return the correct response for chatterbox
-  if (request.url === '/classes/messages') {
-    console.error('cool');
-    // Retrun parseable stringified JSON
-    let headers = defaultCorsHeaders;
-    headers['Content-Type']= 'application/json'; 
+  let JSONheaders = defaultCorsHeaders;
+  JSONheaders['Content-Type']= 'application/json';
 
-    response.writeHead(200, headers);
-    response.end(JSON.stringify({test:[1,2,4,5]}));
+  // Return the correct response for chatterbox
+  if (request.url === '/classes/messages'&& request.method === 'GET') {
+    // Retrun parseable stringified JSON
+    let respond = {
+      results: []
+    }
+
+    response.writeHead(200, JSONheaders);
+    response.end(JSON.stringify(respond));
+
+  } else if (request.url === '/classes/messages' && request.method === 'POST') {
+    let msges = '';
+    var respond;
+
+    request.on('data', chunck => {
+      // dataArray.push(chunck);
+      // console.log(chunck)
+      msges += chunck.toString();
+    });
+    request.on('end', () => {
+      // console.error(JSON.parse(dataArray));
+      
+      console.log('inside end ', msges);
+      response.writeHead(200, JSONheaders);
+      let x = {
+        results: [msges]
+      }
+  
+      response.end(JSON.stringify(x))
+     
+
+    });
+    // console.log('respond ',  dataArray)
+    // response.writeHead(201, JSONheaders);
+    // response.end(JSON.stringify(dataArray));
   }
 
   // Request and Response come from node's http module.
