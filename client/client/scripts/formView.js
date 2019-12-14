@@ -20,8 +20,8 @@ var FormView = {
   },
 
   setStatus: function(active) {
-    var status = active ? 'true' : null;
-    FormView.$form.find('input[type=submit]').attr('disabled', status);
+    //var status = active ? 'true' : null;
+    //FormView.$form.find('input[type=submit]').attr('disabled', status);
   }
 
 };

@@ -17,7 +17,7 @@ var requestHandler = function(request, response) {
   let JSONheaders = defaultCorsHeaders;
   JSONheaders['Content-Type'] = 'application/json';
 
-  if (request.url === '/classes/messages' && request.method === 'GET') {
+  if (request.url === '/classes/messages' && request.method === 'GET' || request.url === '/classes/messages?order=-createdAt') {
     response.writeHead(200, JSONheaders);
     response.end(JSON.stringify({
       results: storage
