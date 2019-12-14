@@ -18,26 +18,36 @@ var requestHandler = function(request, response) {
   JSONheaders['Content-Type'] = 'application/json';
 
   if (request.url === '/classes/messages' && request.method === 'GET') {
-      response.writeHead(200, JSONheaders);
-      response.end(JSON.stringify({
-          results: storage
-      }));
+    response.writeHead(200, JSONheaders);
+    response.end(JSON.stringify({
+      results: storage
+    }));
   } else if (request.url === '/classes/messages' && request.method === 'POST') {
-      let body = '';
+    // prevent file upload
+    //   console.log(request.getHeader)
+    //   let contentType = request.getHeader('Content-Type'); 
+    //   contentType === 'image/jpeg' ? response.writeHead(406, headers).end(): contentType;
+      
+    let body = '';
 
-      request.on('data', chunk=>{
-          body += chunk.toString();
-      }
-      ).on('end', ()=>{
-          storage.push(JSON.parse(body));
-          // console.log(body, JSON.stringify(storage));
-          response.writeHead(201, JSONheaders);
-          response.end();
-      }
-      );
+    request.on('data', chunk=>{
+      body += chunk.toString();
+    }).on('end', ()=>{
+      storage.push(JSON.parse(body));
+      // console.log(body, JSON.stringify(storage));
+      response.writeHead(201, JSONheaders);
+      response.end();
+    }
+    );
+  } else if (request.url === '/classes/messages' && request.method === 'DELETE') {
+    response.writeHead(401, headers);
+    response.end('Stop playing around');
+  } else if (request.method === 'OPTIONS') {
+    response.writeHead(200, JSONheaders);
+    response.end();
   } else {
-      response.writeHead(404, JSONheaders);
-      return response.end('404');
+    response.writeHead(404, JSONheaders);
+    response.end('Not found');
   }
 
   // Request and Response come from node's http module.
