@@ -11,42 +11,35 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
+var storage = [];
+
 var requestHandler = function(request, response) {
   let JSONheaders = defaultCorsHeaders;
-  JSONheaders['Content-Type']= 'application/json';
+  JSONheaders['Content-Type'] = 'application/json';
 
   if (request.url === '/classes/messages' && request.method === 'GET') {
-    response.writeHead(200, JSONheaders);
-    response.end(JSON.stringify({results:[]}));
+      response.writeHead(200, JSONheaders);
+      response.end(JSON.stringify({
+          results: storage
+      }));
   } else if (request.url === '/classes/messages' && request.method === 'POST') {
-    // handlePostData(request, result =>{ 
-    //   console.log(result);
-    //   response.end('result ' + result);
-    // });
-    let body = '';
-    request.on('data', chunk => {
-      body += chunk.toString();
-    })
-    .on('end', () => {
-      console.log(body)
-      response.writeHead(201, JSONheaders);
-      response.end(JSON.stringify({results:body}))
-    });
-  }else{
-    response.writeHead(404, JSONheaders);
-    return response.end('404');
-  }
-  
+      let body = '';
 
-  // var handlePostData = function(request, callback) {
-  //   let body = ''
-  //   request.on('data', chunk => {
-  //     body += chunk.toString();
-  //   })
-  //   .on('end', () => {
-  //     callback(body);
-  //   });
-  // }
+      request.on('data', chunk=>{
+          body += chunk.toString();
+      }
+      ).on('end', ()=>{
+          storage.push(JSON.parse(body));
+          // console.log(body, JSON.stringify(storage));
+          response.writeHead(201, JSONheaders);
+          response.end();
+      }
+      );
+  } else {
+      response.writeHead(404, JSONheaders);
+      return response.end('404');
+  }
+
   // Request and Response come from node's http module.
   //
   // They include information about both the incoming request, such as
@@ -106,4 +99,3 @@ var defaultCorsHeaders = {
 };
 
 module.exports = requestHandler;
-  
